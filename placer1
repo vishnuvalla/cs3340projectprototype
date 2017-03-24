@@ -1,0 +1,40 @@
+.text
+.globl placer
+
+placer: 
+	addi $t5, $0, 11	# $t5 = i set to 11 (11th pos in array)
+	addi $t6, $0, 65	# $t6 set to max value for loop
+	sll $s1, $a1, 2		# $s1 = $a1*4 = inRC multiplied for use in sw functions
+	bne $a2, $0, else	# set $t3 = who based on $a2 = player
+	addi $t3, $0, 1
+	j for
+	
+else:	add $t3, $0, $0
+
+for:	beq $t5, $t6, end
+	sll $t5, $t5, 2
+	add $t7, $t5, $s1	# $t7 = i + inRC
+	add $t8, $t7, $a0	# $t8 = address in the array $a0 with relation to i
+	lw $t8, 0($t8)
+	beq $t8, $0, and1	
+	srl $t5, $t5, 2
+	addi $t5, $t5, 9
+	j for
+	
+and1:	addi $t7, $t7, 9
+	add $t8, $t7, $a0
+	lw $t8, 0($t8)
+	bne $t8, $0, if
+	
+if:	add $t7, $t5, $a1
+	add $t8, $t7, $a0
+	sw $s3, 0($t8)
+	addi $t5, $t5, -2
+	div $v0, $t5, 9
+	jr $ra
+
+end:	addi $v0, $0, -1
+	jr $ra 	
+
+
+.data
