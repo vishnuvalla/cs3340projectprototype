@@ -1,0 +1,39 @@
+.text
+.globl winCheck
+
+winCheck: 
+	addi $t5, $0, 11	# $t5 = i set to 11 (11th pos in array)
+	addi $t6, $0, 65	# $t6 set to max value for loop
+	sll $s4, $a3, 2		# $s4 = inLR
+	sll $s1, $a1, 2		# $s1 = $a1*4 = inRC multiplied for use in sw functions
+	bne $a2, $0, else	# set $t3 = who based on $a2 = player
+	addi $t3, $0, 1
+	j for
+	
+else:	add $t3, $0, $0
+
+for1:	beq $t5, 74, next2
+	sll $t5, $t5, 2
+	
+	if1:	add $t7, $t5, $s4
+		add $t8, $t7, $a0
+		lw $t8, 0($t8)
+		beq $t8, $t3, then1
+		
+		else1: 	li $t9, 0	# $t9 = count
+			j next1
+		then1: 	addi $t9, $t9, 1
+		
+		next1: beq $t9, 4, then2
+			
+			else2:	j for1
+			then2:	addi $v0, $0, 1
+				jr $ra
+	
+next2:
+
+end:	addi $v0, $0, -1
+	jr $ra 	
+
+
+.data
