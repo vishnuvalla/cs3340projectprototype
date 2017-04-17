@@ -63,10 +63,10 @@ next2:	li $t9, 0
 
 while1:	lw $t1, ($t0)
 	beq $t1, 3, do1
-	addi $t0, $t0, 10
+	addi $t0, $t0, 40
 	j while1
 	
-do1:	addi $t0, $t0, -10
+do1:	addi $t0, $t0, -40
 	lw $t1, ($t0)
 	
 	if5:	beq $t1, t3, then5
@@ -90,10 +90,10 @@ next3:	li $t9, 0
 
 while2:	lw $t1, ($t0)
 	beq $t1, 3, do2
-	addi $t0, $t0, 8
+	addi $t0, $t0, 32
 	j while2
 	
-do2:	addi $t0, $t0, -8
+do2:	addi $t0, $t0, -32
 	lw $t1, ($t0)
 	
 	if6:	beq $t1, t3, then6
