@@ -275,8 +275,10 @@ winCheck:
 	addi $t2, $0, 1		# $t2 = i when representing column number
 	addi $t5, $0, 10	# $t5 = i set to 11 (11th pos in array) (row number)
 	addi $t6, $0, 64	# $t6 set to max value for loop
-	sll $s4, $a3, 2		# $s4 = inLR
-	sll $s1, $a1, 2		# $s1 = $a1*4 = inRC multiplied for use in sw functions
+	srl $s4, $s2, 2
+	sub $s4, $s4, $t0
+	sll $s4, $s4, 2		# $s4 = inLR
+	sll $s1, $t0, 2		# $s1 = $a1*4 = inRC multiplied for use in sw functions
 	bne $a2, $0, else	# set $t3 = who based on $a2 = player
 	addi $t3, $0, 1
 	j for1
@@ -287,7 +289,7 @@ for1:	beq $t2, 8, next1
 	sll $t2, $t2, 2
 	
 	if1:	add $t7, $t2, $s4
-		add $t8, $t7, $a0
+		add $t8, $t7, $s0
 		lw $t8, 0($t8)
 		beq $t8, $t3, then1
 		
@@ -309,7 +311,7 @@ for2: 	beq $t5, 64, next2
 	sll $t5, $t5, 2
 	
 	if3:	add $t7, $t5, $s1
-		add $t8, $t7, $a0
+		add $t8, $t7, $s0
 		lw $t8, 0($t8)
 		beq $t8, $t3, then3
 		
@@ -326,17 +328,17 @@ for2: 	beq $t5, 64, next2
 				jr $ra
 
 next2:	li $t9, 0
-	addi $t7, $t2, 0
-	addi $t8, $t5, 0
-	add $t0, $a0, $t7
+	addi $t7, $s4, 0
+	addi $t8, $s1, 0
+	add $t0, $s0, $t7
 	add $t0, $t0, $t8
 
 while4:	lw $t1, ($t0)
 	beq $t1, 3, do1
-	addi $t0, $t0, 10
+	addi $t0, $t0, 40
 	j while4
 	
-do1:	addi $t0, $t0, -10
+do1:	addi $t0, $t0, -40
 	lw $t1, ($t0)
 	
 	if5:	beq $t1, $t3, then5
@@ -353,17 +355,17 @@ if6:	bne $t9, 4, next3
 	jr $ra
 
 next3:	li $t9, 0
-	addi $t7, $t2, 0
-	addi $t8, $t5, 0
-	add $t0, $a0, $t7
+	addi $t7, $s4, 0
+	addi $t8, $s1, 0
+	add $t0, $s0, $t7
 	add $t0, $t0, $t8
 
 while5:	lw $t1, ($t0)
 	beq $t1, 3, do2
-	addi $t0, $t0, 8
+	addi $t0, $t0, 32
 	j while5
 	
-do2:	addi $t0, $t0, -8
+do2:	addi $t0, $t0, -32
 	lw $t1, ($t0)
 	
 	if7:	beq $t1, $t3, then7
@@ -380,4 +382,4 @@ if8:	bne $t9, 4, end
 	jr $ra
 
 end:	addi $v0, $0, 0			# return false
-	jr $ra 	
+	jr $ra
