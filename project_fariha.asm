@@ -351,7 +351,7 @@ for1:	beq $t2, 8, next1
 			else2:	srl $t2, $t2, 2
 				addi $t2, $t2, 1
 				j for1
-			then2:	addi $v0, $0, 1
+			then2:	addi $s7, $0, 1
 				jr $ra
 	
 next1:	li $t9, 0
@@ -373,7 +373,7 @@ for2: 	beq $t5, 64, next2
 			else4:	srl $t5, $t5, 2
 				addi $t5, $t5, 9
 				j for2
-			then4:	li $v0, 1
+			then4:	li $s7, 1
 				jr $ra
 
 next2:	li $t9, 0
@@ -400,7 +400,7 @@ do1:	addi $t0, $t0, -40
 	cond1: bne $t1, 3, do1
 
 if6:	bne $t9, 4, next3
-	li $v0, 1
+	li $s7, 1
 	jr $ra
 
 next3:	li $t9, 0
@@ -424,11 +424,11 @@ do2:	addi $t0, $t0, -32
 		
 		then7: addi $t9, $t9, 1
 			
-	cond2: bne $t1, 3, do1
+	cond2: bne $t1, 3, do2
 
 if8:	bne $t9, 4, end
-	li $v0, 1
+	li $s7, 1
 	jr $ra
 
-end:	addi $v0, $0, 0			# return false
+end:	addi $s7, $0, 0			# return false
 	jr $ra
