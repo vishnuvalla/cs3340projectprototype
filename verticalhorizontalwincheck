@@ -1,0 +1,126 @@
+winCheck: addi $t2, $0, 1		# $t2 = i when representing column number
+	        addi $t5, $0, 10	# $t5 = i set to 11 (11th pos in array) (row number)
+	        srl $s6, $s2, 2
+        	sub $s6, $s6, $t0
+        	sll $s6, $s6, 2		# $s4 = inLR*4
+        	sll $s1, $t0, 2		# $s1 = $t0*4 = inRC multiplied for use in sw functions
+	        bne $a2, $0, else	# set $t3 = who based on $a2 = player
+        	addi $t3, $0, 1
+        	j next1
+	
+          else:	add $t3, $0, $0
+
+next1:	li $t9, 0
+	      addi $t7, $s6, 0
+	      addi $t8, $s1, 0
+	      add $t4, $s0, $t7
+	      add $t4, $t4, $t8
+
+while1:	lw $t1, ($t4)
+	      beq $t1, 3, do1
+	      addi $t4, $t4, 4
+	      j while1
+	
+do1:	addi $t4, $t4, -4
+	    lw $t1, ($t4)
+	
+	    if1:	beq $t1, $t3, then1
+	
+		  else1:	li $t9, 0
+			        j cond1
+		
+		  then1: 	addi $t9, $t9, 1
+			        beq $t9, 4, ret1
+			
+	    cond1: 	bne $t1, 3, do1
+		          j next2
+
+ret1:	li $s7, 1
+	    jr $ra
+      
+next2:	li $t9, 0
+	      addi $t7, $s6, 0
+	      addi $t8, $s1, 0
+	      add $t4, $s0, $t7
+	      add $t4, $t4, $t8
+
+while2:	lw $t1, ($t4)
+	      beq $t1, 3, do2
+      	addi $t4, $t4, 36
+	      j while2
+	
+do2:	addi $t4, $t4, -36
+	    lw $t1, ($t4)
+	
+	    if2:	beq $t1, $t3, else2
+	
+		  else2:	li $t9, 0
+			        j cond2
+		
+	  	then2: 	addi $t9, $t9, 1
+			        beq $t9, 4, ret2
+			
+	    cond2: 	bne $t1, 3, do2
+		          j next3
+
+ret2:	li $s7, 1
+	    jr $ra
+  
+next3:	li $t9, 0
+	      addi $t7, $s6, 0
+	      addi $t8, $s1, 0
+	      add $t4, $s0, $t7
+      	add $t4, $t4, $t8
+
+while3:	lw $t1, ($t4)
+	      beq $t1, 3, do3
+	      addi $t4, $t4, 40
+	      j while3
+	
+do3:	addi $t4, $t4, -40
+	    lw $t1, ($t4)
+	
+	    if3:	beq $t1, $t3, then3
+	
+		  else3:	li $t9, 0
+			        j cond3
+		
+		  then3: 	addi $t9, $t9, 1
+			        beq $t9, 4, ret3
+			
+	    cond1: 	bne $t1, 3, do3
+		          j next4
+
+ret3:	li $s7, 1
+	    jr $ra
+
+next4:	li $t9, 0
+	      addi $t7, $s6, 0
+	      addi $t8, $s1, 0
+	      add $t4, $s0, $t7
+	      add $t4, $t4, $t8
+
+while4:	lw $t1, ($t4)
+	      beq $t1, 3, do4
+	      addi $t4, $t4, 32
+	      j while4
+	
+do4:	addi $t4, $t4, -32
+	    lw $t1, ($t4)
+	
+	    if4:	beq $t1, $t3, then4
+	
+		        else4:	li $t9, 0
+			              j cond4
+		
+		  then4: 	addi $t9, $t9, 1
+			        beq $t9, 4, ret4
+			
+	    cond4: 	bne $t1, 3, do4
+		          j end
+
+      ret4:	  li $s7, 1
+	            jr $ra
+
+end:	addi $s7, $0, 0			# return false
+	    jr $ra
