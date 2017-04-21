@@ -312,10 +312,10 @@ boardDisplay:
 		
 			 
 	exit:
-		j winCheck
+		jal winCheck
 		
-		beq $v0, 1, displayWinMsg
-		beq $v0, 0, changePlayer
+		beq $s7, 1, displayWinMsg
+		beq $s7, 0, changePlayer
 	
 		#j changePlayer
 		
@@ -379,16 +379,16 @@ for2: 	beq $t5, 64, next2
 next2:	li $t9, 0
 	addi $t7, $s6, 0
 	addi $t8, $s1, 0
-	add $t0, $s0, $t7
-	add $t0, $t0, $t8
+	add $t4, $s0, $t7
+	add $t4, $t4, $t8
 
-while4:	lw $t1, ($t0)
+while4:	lw $t1, ($t4)
 	beq $t1, 3, do1
-	addi $t0, $t0, 40
+	addi $t4, $t4, 40
 	j while4
 	
-do1:	addi $t0, $t0, -40
-	lw $t1, ($t0)
+do1:	addi $t4, $t4, -40
+	lw $t1, ($t4)
 	
 	if5:	beq $t1, $t3, then5
 	
@@ -406,16 +406,16 @@ if6:	bne $t9, 4, next3
 next3:	li $t9, 0
 	addi $t7, $s6, 0
 	addi $t8, $s1, 0
-	add $t0, $s0, $t7
-	add $t0, $t0, $t8
+	add $t4, $s0, $t7
+	add $t4, $t4, $t8
 
-while5:	lw $t1, ($t0)
+while5:	lw $t1, ($t4)
 	beq $t1, 3, do2
-	addi $t0, $t0, 32
+	addi $t4, $t4, 32
 	j while5
 	
-do2:	addi $t0, $t0, -32
-	lw $t1, ($t0)
+do2:	addi $t4, $t4, -32
+	lw $t1, ($t4)
 	
 	if7:	beq $t1, $t3, then7
 	
