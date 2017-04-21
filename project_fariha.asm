@@ -324,13 +324,13 @@ winCheck:	addi $t2, $0, 1		# $t2 = i when representing column number
 	        addi $t5, $0, 10	# $t5 = i set to 11 (11th pos in array) (row number)
 	        srl $s6, $s2, 2
         	sub $s6, $s6, $t0
-        	sll $s6, $s6, 2		# $s4 = inLR*4
+        	sll $s6, $s6, 2		# $s6 = inLR*4
         	sll $s1, $t0, 2		# $s1 = $t0*4 = inRC multiplied for use in sw functions
-	        bne $a2, $0, else	# set $t3 = who based on $a2 = player
-        	addi $t3, $0, 1
+	        beq $s4, 1, else	# set $t3 = who based on $s4 = player
+        	addi $t3, $0, 2
         	j next1
 	
-          	else:	add $t3, $0, $0
+          	else:	addi $t3, $0, 1
 
 next1:	li $t9, 0
 	addi $t7, $s6, 0
