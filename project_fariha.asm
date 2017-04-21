@@ -221,12 +221,12 @@ changeFrom_Player1:
 	li $s4, 2
 	#j main
 	#instead of going to main, display the new board and then go to main
-	j boardDisplay
+	j main
 	
 changeFrom_Player2:
 	li $s4, 1
 	#j main
-	j boardDisplay
+	j main
 boardDisplay:
 			
 		li $t3, 0		#starting index 0 in t3 (only once)
