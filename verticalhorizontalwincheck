@@ -88,7 +88,7 @@ do3:	addi $t4, $t4, -40
 		then3: 	addi $t9, $t9, 1
 			beq $t9, 4, ret3
 			
-	cond1: 	bne $t1, 3, do3
+	cond3: 	bne $t1, 3, do3
 		j next4
 
 ret3:	li $s7, 1
