@@ -323,11 +323,10 @@ boardDisplay:
 winCheck:
 	addi $t2, $0, 1		# $t2 = i when representing column number
 	addi $t5, $0, 10	# $t5 = i set to 11 (11th pos in array) (row number)
-	addi $t6, $0, 64	# $t6 set to max value for loop
 	srl $s6, $s2, 2
 	sub $s6, $s6, $t0
-	sll $s6, $s6, 2		# $s4 = inLR
-	sll $s1, $t0, 2		# $s1 = $a1*4 = inRC multiplied for use in sw functions
+	sll $s6, $s6, 2		# $s4 = inLR*4
+	sll $s1, $t0, 2		# $s1 = $t0*4 = inRC multiplied for use in sw functions
 	bne $a2, $0, else	# set $t3 = who based on $a2 = player
 	addi $t3, $0, 1
 	j for1
@@ -395,12 +394,13 @@ do1:	addi $t4, $t4, -40
 		else5:	li $t9, 0
 			j cond1
 		
-		then5: addi $t9, $t9, 1
+		then5: 	addi $t9, $t9, 1
+			beq $t9, 4, if6
 			
-	cond1: bne $t1, 3, do1
+	cond1: 	bne $t1, 3, do1
+		j next3
 
-if6:	bne $t9, 4, next3
-	li $s7, 1
+if6:	li $s7, 1
 	jr $ra
 
 next3:	li $t9, 0
@@ -422,12 +422,13 @@ do2:	addi $t4, $t4, -32
 		else7:	li $t9, 0
 			j cond2
 		
-		then7: addi $t9, $t9, 1
+		then7: 	addi $t9, $t9, 1
+			beq $t9, 4, if8
 			
-	cond2: bne $t1, 3, do2
+	cond2: 	bne $t1, 3, do2
+		j end
 
-if8:	bne $t9, 4, end
-	li $s7, 1
+if8:	li $s7, 1
 	jr $ra
 
 end:	addi $s7, $0, 0			# return false
