@@ -58,20 +58,69 @@ main:
 	syscall
 	
 	#Prompt for play against comp or two player
-	#li $v0, 4
-	#la $a0, compOrTwoPlayer
-	#syscall
+	li $v0, 4
+	la $a0, compOrTwoPlayer
+	syscall
 	
-	#li $v0, 5
-	#syscall
+	li $v0, 5
+	syscall
 	
-	#beq $v0, 1, twoPlayer
-	#beq $v0, 2, comp
+	move $t2, $v0
+		li $v0, 1
+	move $a0, $t2
+	syscall	
+
+	beq $t2, 1, comp
+	beq $t2, 2, twoPlayer
 	
-#comp:
 	
+comp:
+	#print statement for whose turn
+	li $v0, 4		
+	la $a0, Turn
+	syscall
 	
-#twoPlayer:
+	#print the player number
+	li $v0, 1
+	move $a0, $s4
+	syscall
+	
+	#print a newline twice
+	li $v0, 4		
+	la $a0, newline
+	syscall
+	
+	li $v0, 4		
+	la $a0, newline
+	syscall
+	
+	beq $s4, 2, userTurn
+	beq $s4, 1, compTurn
+	
+userTurn:
+	#Print prompt message to user
+	li $v0, 4		
+	la $a0, ColMsg
+	syscall
+	
+	#Get the input from the user
+	li $v0, 5
+	syscall
+	
+	#Put input into $t0 			#user input in $t0
+	move $t0, $v0
+	
+	j validCol
+compTurn:
+	li $v0, 42  	#42 is system call code to generate random int
+	li $a1, 7 	#$a1- upper bound of 6. Random int range is 0-6
+	syscall		
+	
+	move $t0, $a0		#move to s0 so a0 is clear
+	addi $t0, $t0, 1	#add 1  so the range is between 1 and 7
+	
+	j Placing
+twoPlayer:
 	#print statement for whose turn
 	li $v0, 4		
 	la $a0, Turn
@@ -108,10 +157,10 @@ main:
 validCol:	
 	#t1 will hold 7 to check against, $t2 will hold 1
 	li $t1, 7
-	li $t2, 1
+	#li $t2, 1
 	
 	#conditions to branch
-	blt $t0, $t2, colLoop		#if less than 0
+	blt $t0, 1, colLoop		#if less than 0
 	bgt $t0, $t1, colLoop		#if more than 7
 	
 	#jump to placing based on valid column number when finished checking between 1-7
@@ -192,7 +241,8 @@ put:
 	j changePlayer
 	
 	#wincheck should jump back to here
-changePlayer:	beq $s4, 1, changeFrom_Player1
+changePlayer:
+		beq $s4, 1, changeFrom_Player1
 		beq $s4, 2, changeFrom_Player2
 		
 displayWinMsg: 
@@ -215,18 +265,24 @@ Full:
 	la $a0, FullMsg
 	syscall
 	
-	j main			#jump back to main for valid col again
+	beq $t2, 1, jumpToComp
+	beq $t2, 2, jumpToTwoPlayer
+			#jump back to main for valid col again
 
 changeFrom_Player1:
 	li $s4, 2
 	#j main
 	#instead of going to main, display the new board and then go to main
-	j main
+	beq $t2, 1, jumpToComp
+	beq $t2, 2, jumpToTwoPlayer
+
 	
 changeFrom_Player2:
 	li $s4, 1
 	#j main
-	j main
+	beq $t2, 1, jumpToComp
+	beq $t2, 2, jumpToTwoPlayer
+
 boardDisplay:
 			
 		li $t3, 0		#starting index 0 in t3 (only once)
@@ -312,15 +368,23 @@ boardDisplay:
 		
 			 
 	exit:
+
 		jal winCheck
+		
+
 		
 		beq $s7, 1, displayWinMsg
 		beq $s7, 0, changePlayer
 	
 		#j changePlayer
 		
+jumpToComp: j comp
+
+jumpToTwoPlayer: j twoPlayer
 		
-winCheck:	addi $t2, $0, 1		# $t2 = i when representing column number
+		
+winCheck:	
+		#addi $t2, $0, 1		# $t2 = i when representing column number
 	        addi $t5, $0, 10	# $t5 = i set to 11 (11th pos in array) (row number)
 	        srl $s6, $s2, 2
         	sub $s6, $s6, $t0
