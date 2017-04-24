@@ -438,7 +438,7 @@ while2:	lw $t1, ($t4)
 do2:	addi $t4, $t4, -36
 	lw $t1, ($t4)
 	
-	if2:	beq $t1, $t3, else2
+	if2:	beq $t1, $t3, then2
 	
 		else2:	li $t9, 0
 			j cond2
