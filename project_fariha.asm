@@ -1,22 +1,22 @@
-#4/13/17
+#4/25/17
 #works with displaying what was previously in the array
 #need to use board reader for proper display
-#needs a wincheck for the game to end
 #doesn't account for scenario of a full board with no wins
 
 #need to display a line telling user player 1 is x,
 #player 2 is O
 
-#fell into a infinite loop somewhere
-#all i could do was enter which column
+#need to do board complete draw condition by checking the first row
+#display who was the player that won
+
 .data
 
-ErrorMsg: .asciiz "Error! Incorrect input."
-ColMsg: .asciiz "Enter a number between 1 and 7: "
+ErrorMsg: .asciiz "\nError! Incorrect input.\n"
+ColMsg: .asciiz "\nEnter the column you want to place your coin in (a number between 1 and 7): "
 newline: .asciiz "\n"
-job: .asciiz "good job"
-FullMsg: .asciiz "Sorry this column is full.\n"
-Turn: .asciiz "Player's Turn: Player "
+FullMsg: .asciiz "\nSorry this column is full.\n"
+Turn: .asciiz "\nPlayer's Turn: Player "
+play: .asciiz "\nPlayer "
 
 x: .asciiz "|X|"
 o: .asciiz "|O|"
@@ -24,13 +24,13 @@ space: .asciiz "| |"
 side_bar: .asciiz "|"
 dash: .asciiz "-"
 
-opening_prompt: .asciiz "Welcome to a game of Connect 4!\nConnect 4 pieces in a row to win.\nPlayer 1 is O and Player 2 is X.\nIt is a 6x7 board.\n"
+opening_prompt: .asciiz "Welcome to a game of Connect 4!\nConnect 4 pieces in a row to win.\nPlayer 1 is X and Player 2 is O.\nIt is a 6x7 board.\n"
 player1_prompt: .asciiz "\nPlayer 1's turn\n"
 player2_prompt: .asciiz "\nPlayer 2's turn\n"
 
-compOrTwoPlayer: .asciiz "Choose 1 for comp and 2 for two player"
+compOrTwoPlayer: .asciiz "Choose:\n1 to play computer mode (Note: Player 1 is always the computer in this mode)\n2 for two-player mode: \n"
 
-win_msg: .asciiz "\nPlayer playing won\n"
+win_msg: .asciiz "\nYOU WON THE GAME\nCongratulations!!!!!!"
 
 #create an array of 72 words
 board: .word 3,3,3,3,3,3,3,3,3,
@@ -45,6 +45,11 @@ board: .word 3,3,3,3,3,3,3,3,3,
 	la $s0, board		
 	li $s4, 1		#start off the game with player 1
 welcome:
+	
+	#print a newline
+	li $v0, 4		
+	la $a0, newline
+	syscall
 	
 	#Print welcome message
 	li $v0, 4		
@@ -66,9 +71,9 @@ main:
 	syscall
 	
 	move $t2, $v0
-		li $v0, 1
-	move $a0, $t2
-	syscall	
+	#li $v0, 1
+	#move $a0, $t2
+	#syscall	
 
 	beq $t2, 1, comp
 	beq $t2, 2, twoPlayer
@@ -210,11 +215,6 @@ check:
 				
 	lw $s5, 0($s3)		#load what was in this address to s5
 	
-	#####Display
-	li $v0, 1
-	move $a0, $s5
-	syscall
-	
 	beq $s5, 0, put
 	beq $s5, 1, next
 	beq $s5, 2, next
@@ -229,10 +229,6 @@ put:
 	#add $s3, $s0, $s2	#add new offset to starting address
 	sw $s4, 0($s3)		#s3 is the address
 ###############################################################################
-	#Print prompt message to user
-	li $v0, 4		
-	la $a0, job
-	syscall
 	
 	j boardDisplay
 	
@@ -245,7 +241,15 @@ changePlayer:
 		beq $s4, 1, changeFrom_Player1
 		beq $s4, 2, changeFrom_Player2
 		
-displayWinMsg: 
+displayWinMsg:
+	li $v0, 4
+	la $a0, play
+	syscall
+	
+	li $v0, 1 
+	add $a0, $zero, $s4
+	syscall
+	
 	li $v0, 4
 	la $a0,win_msg
 	syscall
@@ -271,7 +275,6 @@ Full:
 
 changeFrom_Player1:
 	li $s4, 2
-	#j main
 	#instead of going to main, display the new board and then go to main
 	beq $t2, 1, jumpToComp
 	beq $t2, 2, jumpToTwoPlayer
@@ -279,7 +282,7 @@ changeFrom_Player1:
 	
 changeFrom_Player2:
 	li $s4, 1
-	#j main
+	
 	beq $t2, 1, jumpToComp
 	beq $t2, 2, jumpToTwoPlayer
 
@@ -314,7 +317,6 @@ boardDisplay:
 		
 		beq $t4, 3, print_3		#the 3s throughout the board
 		
-		#j while shold never reach here
 	
 	print_0:
 		#if it's 0, print an empty space
@@ -376,7 +378,6 @@ boardDisplay:
 		beq $s7, 1, displayWinMsg
 		beq $s7, 0, changePlayer
 	
-		#j changePlayer
 		
 jumpToComp: j comp
 
