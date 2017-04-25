@@ -388,23 +388,23 @@ winCheck:
 	
           	else:	addi $t3, $0, 1
 
-next1:	li $t9, 0
-	addi $t7, $s6, 0
+next1:	li $t9, 0			# $t9 = count, when count is 4, winCheck is true
+	addi $t7, $s6, 0		
 	addi $t8, $s1, 0
 	add $t4, $s0, $t7
-	add $t4, $t4, $t8
+	add $t4, $t4, $t8		# $t4 = Array address + inLR + inRC = position of last move
 
 while1:	lw $t1, ($t4)
-	beq $t1, 3, do1
+	beq $t1, 3, do1			# loops until edge of board is hit
 	addi $t4, $t4, 4
 	j while1
 	
-do1:	addi $t4, $t4, -4
+do1:	addi $t4, $t4, -4		# checks the row for a win
 	lw $t1, ($t4)
 	
 	if1:	beq $t1, $t3, then1
 	
-		else1:	li $t9, 0
+		else1:	li $t9, 0	# sets count to 0 if there is a break in the sequence
 			j cond1
 		
 		then1: 	addi $t9, $t9, 1
@@ -416,7 +416,7 @@ do1:	addi $t4, $t4, -4
 ret1:	li $s7, 1
 	jr $ra
       
-next2:	li $t9, 0
+next2:	li $t9, 0			# same as row check logic, except checks column
 	addi $t7, $s6, 0
 	addi $t8, $s1, 0
 	add $t4, $s0, $t7
@@ -424,7 +424,7 @@ next2:	li $t9, 0
 
 while2:	lw $t1, ($t4)
 	beq $t1, 3, do2
-      	addi $t4, $t4, 36
+      	addi $t4, $t4, 36		# +36 moves through the 9 element rows
 	j while2
 	
 do2:	addi $t4, $t4, -36
@@ -444,7 +444,7 @@ do2:	addi $t4, $t4, -36
 ret2:	li $s7, 1
 	jr $ra
   
-next3:	li $t9, 0
+next3:	li $t9, 0			# checks diagonal
 	addi $t7, $s6, 0
 	addi $t8, $s1, 0
 	add $t4, $s0, $t7
@@ -452,7 +452,7 @@ next3:	li $t9, 0
 
 while3:	lw $t1, ($t4)
 	beq $t1, 3, do3
-	addi $t4, $t4, 40
+	addi $t4, $t4, 40		# +40 moves 10 spaces in an array with 9 character rows, moving diagonally
 	j while3
 	
 do3:	addi $t4, $t4, -40
@@ -472,7 +472,7 @@ do3:	addi $t4, $t4, -40
 ret3:	li $s7, 1
 	jr $ra
 
-next4:	li $t9, 0
+next4:	li $t9, 0			# checks other diagonal
 	addi $t7, $s6, 0
 	addi $t8, $s1, 0
 	add $t4, $s0, $t7
